@@ -1,0 +1,7 @@
+{
+  "name": "iot-light-remote-control",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
