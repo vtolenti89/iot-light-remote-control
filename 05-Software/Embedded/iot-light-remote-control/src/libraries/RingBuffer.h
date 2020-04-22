@@ -35,7 +35,7 @@ public:
 	void getStrN(char * destination, unsigned int skipChars, unsigned int num);
 
 
-private:
+protected:
 
 	unsigned int _size;
 	char* ringBuf;

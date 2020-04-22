@@ -1,47 +1,102 @@
-/*--------------------------------------------------------------------
-This file is part of the Arduino WiFiEsp library.
+/**
+ * Class Led creates an interface for manipulating 
+ * the status of a Led connected to given pin
+ * @author Victor Tolentino
+ */
 
-The Arduino WiFiEsp library is free software: you can redistribute it
-and/or modify it under the terms of the GNU General Public License as
-published by the Free Software Foundation, either version 3 of the
-License, or (at your option) any later version.
+#ifndef Led_h
+#define Led_h
+#define MAX_NUMBER_LEDS 8 // Max number of LEDS
 
-The Arduino WiFiEsp library is distributed in the hope that it will be
-useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with The Arduino WiFiEsp library.  If not, see
-<http://www.gnu.org/licenses/>.
---------------------------------------------------------------------*/
-
-#ifndef RingBuffer_h
-#define RingBuffer_h
-
-
-class RingBuffer
+class Led
 {
 public:
-	RingBuffer(unsigned int size);
-	~RingBuffer();
+	Led();
+	/**
+	 * Custom contructor
+	 * 
+	 * @param _pin led pin number
+	 * @param _brightness led brightness 0 - 100
+	 * @param _state led on/off state
+	 */
+	Led(int pin, unsigned int brightness, bool on);
 
-	void reset();
-	void init();
-	void push(char c);
-	int getPos();
-	bool endsWith(const char* str);
-	void getStr(char * destination, unsigned int skipChars);
-	void getStrN(char * destination, unsigned int skipChars, unsigned int num);
+	/**
+	 * Destructor 
+	 */
+	~Led();
 
+	/**
+	 * Set the state of a given pin
+	 * 
+	 * @param _pin led pin number
+	 * @return void  
+	 */
+	void setPin(unsigned int _pin);
+
+	/**
+	 * Set the brightness of a led
+	 * @param _brightness led brightness 0 - 100
+	 * @return void
+	 */
+	void setBrightness(unsigned int _brightness);
+
+	/**
+	 * Set the led pin on/off state
+	 * 
+	 * @param _state led on/off state
+	 * @return void
+	 */
+	void setState(bool _state);
+
+	/**
+	 * Get the pin number of a led
+	 * 
+	 * @return unsigned int
+	 */
+	unsigned int getPin();
+
+	/**
+	 * Get the brightness of a led
+	 * 
+	 * @return unsigned int
+	 */
+	unsigned int getBrightness();
+
+	/**
+	 * Get the on/off state of a led
+	 * 
+	 * @return bool
+	 */
+	bool getState();
 
 private:
+	/* Led pin number*/
+	unsigned int pin;
 
-	unsigned int _size;
-	char* ringBuf;
-	char* ringBufEnd;
-	char* ringBufP;
+	/* Led brightness 0 - 100*/
+	unsigned int brightness;
 
+	/* Led on/off state*/
+	bool isOn;
+};
+
+class Leds
+{
+public:
+	Leds();
+	~Leds();
+	void add(int pin, unsigned int brightness, bool on);
+	int getQuantity();
+	void setBrightness(int led, int brightness);
+	void setState(int led, bool state);
+	int getBrightness(int led);
+	bool getState(int led);
+	int findIndex(int led);
+	Led devs[MAX_NUMBER_LEDS];
+
+private:
+	int quantity;
 };
 
 #endif

@@ -1,104 +1,110 @@
-/*--------------------------------------------------------------------
-This file is part of the Arduino WiFiEsp library.
+#include "Led.h"
 
-The Arduino WiFiEsp library is free software: you can redistribute it
-and/or modify it under the terms of the GNU General Public License as
-published by the Free Software Foundation, either version 3 of the
-License, or (at your option) any later version.
+//#include <Arduino.h>
 
-The Arduino WiFiEsp library is distributed in the hope that it will be
-useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+Led::Led(){}
 
-You should have received a copy of the GNU General Public License
-along with The Arduino WiFiEsp library.  If not, see
-<http://www.gnu.org/licenses/>.
---------------------------------------------------------------------*/
-
-#include "RingBuffer.h"
-
-#include <Arduino.h>
-
-RingBuffer::RingBuffer(unsigned int size)
+Led::Led(int _pin, unsigned int _brightness, bool _state)
 {
-	_size = size;
-	// add one char to terminate the string
-	ringBuf = new char[size+1];
-	ringBufEnd = &ringBuf[size];
-	init();
+	setPin(_pin);
+	setBrightness(_brightness);
+	setState(_state);
 }
 
-RingBuffer::~RingBuffer() {}
+Led::~Led() {}
 
-void RingBuffer::reset()
+void Led::setPin(unsigned int _pin)
 {
-	ringBufP = ringBuf;
+	pin = _pin;
 }
 
-void RingBuffer::init()
+void Led::setBrightness(unsigned int _brightness)
 {
-	ringBufP = ringBuf;
-	memset(ringBuf, 0, _size+1);
+	brightness = _brightness;
 }
 
-void RingBuffer::push(char c)
+void Led::setState(bool _state)
 {
-	*ringBufP = c;
-	ringBufP++;
-	if (ringBufP>=ringBufEnd)
-		ringBufP = ringBuf;
+	isOn = _state;
 }
 
-
-
-bool RingBuffer::endsWith(const char* str)
+unsigned int Led::getPin()
 {
-	int findStrLen = strlen(str);
-	// b is the start position into the ring buffer
-	char* b = ringBufP-findStrLen;
-	if(b < ringBuf)
-		b = b + _size;
+	return pin;
+}
 
-	char *p1 = (char*)&str[0];
-	char *p2 = p1 + findStrLen;
+unsigned int Led::getBrightness()
+{
+	return brightness;
+}
 
-	for(char *p=p1; p<p2; p++)
+bool Led::getState()
+{
+	return isOn;
+};
+
+Leds::Leds()
+{
+	quantity = 0;
+};
+
+Leds::~Leds() {}
+
+void Leds::add(int pin, unsigned int brightness, bool on)
+{
+	if (quantity < MAX_NUMBER_LEDS)
 	{
-		if(*p != *b)
-			return false;
-
-		b++;
-		if (b == ringBufEnd)
-			b=ringBuf;
+		devs[quantity++] = Led(pin, brightness, on);
 	}
-
-	return true;
 }
 
-
-
-void RingBuffer::getStr(char * destination, unsigned int skipChars)
+void Leds::setBrightness(int led, int brightness)
 {
-	int len = ringBufP-ringBuf-skipChars;
-
-	// copy buffer to destination string
-	strncpy(destination, ringBuf, len);
-
-	// terminate output string
-	//destination[len]=0;
+	int index = findIndex(led);
+	if (index > -1)
+	{
+		return devs[index].setBrightness(brightness);
+	}
 }
 
-void RingBuffer::getStrN(char * destination, unsigned int skipChars, unsigned int num)
+void Leds::setState(int led, bool state)
 {
-	int len = ringBufP-ringBuf-skipChars;
+	int index = findIndex(led);
+	if (index > -1)
+	{
+		return devs[index].setState(state);
+	}
+}
 
-	if (len>num)
-		len=num;
+int Leds::getBrightness(int led)
+{
+	int index = findIndex(led);
+	if (index > -1)
+	{
+		return devs[index].getBrightness();
+	}
+}
 
-	// copy buffer to destination string
-	strncpy(destination, ringBuf, len);
+bool Leds::getState(int led)
+{
+	int index = findIndex(led);
+	if (index > -1)
+	{
+		return devs[index].getState();
+	}
+}
 
-	// terminate output string
-	//destination[len]=0;
+int Leds::findIndex(int led)
+{
+	for (int i = 0; i < quantity; i++)
+	{
+		if (devs[i].getPin() == led)
+			return i;
+	}
+	return -1;
+}
+
+int Leds::getQuantity()
+{
+	return quantity;
 }
