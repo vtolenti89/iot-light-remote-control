@@ -10,9 +10,8 @@ const get = (endpoint: string) => {
         method: "GET",
         url: protocol + endpoint,
         headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-            // 'Content-Type': 'text/html'
+            // 'Accept': 'application/json',
+            // 'Content-Type': 'application/json'
         },
     })
         .then((response) => {
@@ -38,7 +37,7 @@ const post = (endpoint: string, data: Object = {}) => {
         data,
         headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json',
+            'Content-Type': 'text/plain'
         },
     })
         .then(response => {

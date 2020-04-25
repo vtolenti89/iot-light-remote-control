@@ -17,12 +17,7 @@ const DevicesPage: React.FC = () => {
             <IonTitle size="large">Devices</IonTitle>
           </IonToolbar>
         </IonHeader>
-
-
         <DevicesContainer name="Tab 1 page" />
-
-
-
       </IonContent>
     </IonPage>
   );

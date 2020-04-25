@@ -15,12 +15,12 @@ const getLightStatus = (api: string) => {
   return apiService.get(api + '/light/status');
 }
 
-const dimLight = (led: number, percentage: number, user: string, pass: string) => {
-  return apiService.post('/light/set?' + ledUtils.parseLed(led, ACTION.BRIGHTNESS) + "=" + percentage + "&user=" + user + "&pass=" + pass);
+const dimLight = (api: string, led: string, percentage: number, user: string, pass: string) => {
+  return apiService.post(api + '/light/set?' + ledUtils.parseLed(led, ACTION.BRIGHTNESS) + "=" + percentage + "&user=" + user + "&pass=" + pass);
 }
 
-const toggleLight = (led: number, isOn: boolean, user: string, pass: string) => {
-  return apiService.post('/light/set?' + ledUtils.parseLed(led, ACTION.TOGGLE) + "=" + isOn + "&user=" + user + "&pass=" + pass);
+const toggleLight = (api: string, led: string, isOn: boolean, user: string, pass: string) => {
+  return apiService.post(api + '/light/set?' + ledUtils.parseLed(led, ACTION.TOGGLE) + "=" + isOn + "&user=" + user + "&pass=" + pass);
 }
 
 export const lightService = {

@@ -2,8 +2,10 @@ import React, { useContext, useState, useEffect } from 'react';
 import { IonSlides, IonSlide, IonFab, IonFabButton, IonIcon, IonItem, IonButton, IonLabel } from '@ionic/react';
 import { wifi } from 'ionicons/icons';
 import { lightService } from './../services/light-service';
+import { useIsMount } from './useIsMount';
 
 import LightController, { InterfaceLamp } from './LightController';
+import Loader from './loader';
 import { add } from 'ionicons/icons';
 import './DevicesContainer.css';
 import { AppContext } from './../AppContextProvider';
@@ -16,13 +18,14 @@ interface ContainerProps {
 
 const DevicesContainer: React.FC<ContainerProps> = ({ name }) => {
   const { state, dispatch } = useContext(AppContext);
-  const [isFetchingData, setFetchingData] = useState(false);
+  const [{ fetchData, isFetchingData }, setFetchingData] = useState({ fetchData: false, isFetchingData: false });
+  const isMount = useIsMount();
   // Optional parameters to pass to the swiper instance. See http://idangero.us/swiper/api/ for valid options.
   const slideOpts = {
     initialSlide: 1,
     speed: 400,
     autoHeight: true,
-    // direction: 'vertical',
+    direction: 'vertical',
     centeredSlides: true,
     observer: true,
     on: {
@@ -49,20 +52,41 @@ const DevicesContainer: React.FC<ContainerProps> = ({ name }) => {
   const updateDevices = async () => {
     console.log('...retrieving...')
     lightService.getLightStatus(state.api).then((res) => {
-      setFetchingData(false);
       console.log(res);
+      if (res) {
+        const lampsArray = Object.keys(res);
+        console.log(lampsArray);
+        const devices = lampsArray.map((lamp: any, index: number) => {
+          return {
+            id: lamp,
+            color: res[lamp].color,
+            brightness: res[lamp].brightness,
+            turnedOn: res[lamp].isOn
+          }
+        })
+        console.log(devices);
+        dispatch({
+          key: 'devices',
+          data: devices,
+        })
+
+      }
+      setFetchingData({ fetchData, isFetchingData: false });
     })
   }
 
   useEffect(() => {
-    updateDevices();
+    if (!isMount) {
+      setFetchingData({ fetchData, isFetchingData: true });
+      updateDevices();
+    }
   },
-    [isFetchingData]
+    [fetchData]
   );
 
   const noDevices = (
     <h2>
-      No devices have been added yet.
+      There are no devices yet.
     </h2>
   )
 
@@ -70,48 +94,33 @@ const DevicesContainer: React.FC<ContainerProps> = ({ name }) => {
 
   return (
     <div className="c-devices">
-      {/* <strong>{name}</strong>
-      <p>{state.count}</p> */}
-      <IonFab vertical="top" horizontal="end" slot="fixed">
-        <IonFabButton onClick={() => {
-
-          const lamp: InterfaceLamp = {
-            brightness: 0,
-            turnedOn: false,
-          }
-          let devices = state.devices;
-          devices.push(lamp)
-          dispatch({
-            key: 'devices',
-            data: devices,
-          })
-        }}>
-          <IonIcon icon={add} />
-        </IonFabButton>
-      </IonFab>
-      {state.devices.length ?
-        <IonSlides
-          onIonSlidesDidLoad={(e) => {
-            console.log('did load')
-          }}
-          onIonSlideDidChange={(e) => {
-            // jumpToSlide(e)
-          }}
-          pager={true} options={slideOpts}>
-          {state.devices.map((device, index) => {
-            return <IonSlide key={index}>
-              <LightController {...device} id={index} />
-            </IonSlide>
-          })}
-        </IonSlides>
-        : noDevices}
-
-      <IonItem>
-        <IonButton expand="full" onClick={() => setFetchingData(true)}>
-          <IonLabel>Refresh</IonLabel>
-          <IonIcon icon={wifi}></IonIcon>
-        </IonButton>
-      </IonItem>
+      <Loader isLoading={isFetchingData} message={"Updating devices"} onClose={(e) => console.log(e)} />
+      <div className="c-devices__slide">
+        {state.devices.length ?
+          <IonSlides
+            onIonSlidesDidLoad={(e) => {
+              console.log('did load')
+            }}
+            onIonSlideDidChange={(e) => {
+              // jumpToSlide(e)
+            }}
+            pager={true} options={slideOpts}>
+            {state.devices.map((device, index) => {
+              return <IonSlide key={index}>
+                <LightController {...device} />
+              </IonSlide>
+            })}
+          </IonSlides>
+          : noDevices}
+      </div>
+      <div className="c-devices__btn">
+        <IonItem lines={"none"}>
+          <IonButton expand="full" onClick={() => setFetchingData({ fetchData: !fetchData, isFetchingData })}>
+            <IonLabel>Refresh</IonLabel>
+            <IonIcon icon={wifi}></IonIcon>
+          </IonButton>
+        </IonItem>
+      </div>
 
     </div>
   );

@@ -1,8 +1,8 @@
 {
     "LED": {
-        "RED": 0,
-        "YELLOW": 1,
-        "BLUE": 2
+        "RED": "redLed",
+        "YELLOW": "yellowLed",
+        "BLUE": "blueLed"
     },
     "ACTION" : {
         "TOGGLE": 0,

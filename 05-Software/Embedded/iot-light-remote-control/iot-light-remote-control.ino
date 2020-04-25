@@ -46,17 +46,12 @@ const char *userpass = "bulibuli";
 
 // Saving long constants / variables in the flash memory to save the SRAM
 // preventing memory overflow and making it more stable 
-static const char jsonNotExist[] PROGMEM = "{\"status\":500,"
-    "\"data\":\"Page does not exist\"}";
-static const char jsonInvalidUser[] PROGMEM =  "{\"status\":500,"
-    "\"data\":\"User and/or pass is not valid\"}";
+static const char jsonNotExist[] PROGMEM = "{\"error\":\"Page does not exist\"}";
+static const char jsonInvalidUser[] PROGMEM =  "{\"error\":\"User and/or pass is not valid\"}";
 static const char jsonLedStatus [] PROGMEM = "{"
-    "\"status\":200,"
-    "\"data\":{"
-    "\"redLed\":{\"brightness\":%u,\"isOn\": %d},"
-    "\"yellowLed\":{\"brightness\":%u,\"isOn\":%d},"
-    "\"blueLed\":{\"brightness\":%u,\"isOn\":%d}"
-    "}"
+    "\"redLed\":{\"color\":\"red\",\"brightness\":%u,\"isOn\": %d},"
+    "\"yellowLed\":{\"color\":\"yellow\",\"brightness\":%u,\"isOn\":%d},"
+    "\"blueLed\":{\"color\":\"blue\",\"brightness\":%u,\"isOn\":%d}"
     "}";
 
 /**
