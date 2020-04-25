@@ -1,7 +1,11 @@
 {
-    "LIGHTS": {
-        "RED_LED": "RED_LED",
-        "YELLOW_LED": "YELLOW_LED",
-        "BLUE_LED": "BLUE_LED"
+    "LED": {
+        "RED": 0,
+        "YELLOW": 1,
+        "BLUE": 2
+    },
+    "ACTION" : {
+        "TOGGLE": 0,
+        "BRIGHTNESS": 1
     }
 }

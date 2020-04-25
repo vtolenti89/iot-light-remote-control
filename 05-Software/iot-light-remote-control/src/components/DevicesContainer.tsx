@@ -14,8 +14,6 @@ interface ContainerProps {
 
 
 
-
-
 const DevicesContainer: React.FC<ContainerProps> = ({ name }) => {
   const { state, dispatch } = useContext(AppContext);
   const [isFetchingData, setFetchingData] = useState(false);
@@ -49,7 +47,9 @@ const DevicesContainer: React.FC<ContainerProps> = ({ name }) => {
 
 
   const updateDevices = async () => {
+    console.log('...retrieving...')
     lightService.getLightStatus(state.api).then((res) => {
+      setFetchingData(false);
       console.log(res);
     })
   }
@@ -108,7 +108,7 @@ const DevicesContainer: React.FC<ContainerProps> = ({ name }) => {
 
       <IonItem>
         <IonButton expand="full" onClick={() => setFetchingData(true)}>
-          <IonLabel>Connect</IonLabel>
+          <IonLabel>Refresh</IonLabel>
           <IonIcon icon={wifi}></IonIcon>
         </IonButton>
       </IonItem>

@@ -31,7 +31,7 @@ const get = (endpoint: string) => {
  * @param {*} that 
  * @param {*} context 
  */
-const post = (endpoint: string, data: Object) => {
+const post = (endpoint: string, data: Object = {}) => {
     return axios({
         method: "POST",
         url: protocol + endpoint,
@@ -56,11 +56,7 @@ const post = (endpoint: string, data: Object) => {
  * @param {Object} response 
  */
 const isResponseValid = (response: any) => {
-    if (
-        response &&
-        response.status === 200 &&
-        response.statusText === "OK"
-    ) {
+    if (response.status === 200) {
         return response.data
     }
     throw response

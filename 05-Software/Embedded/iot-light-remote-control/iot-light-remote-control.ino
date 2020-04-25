@@ -44,6 +44,21 @@ int status = WL_IDLE_STATUS;  // the Wifi radio's status
 const char *username = "alex";
 const char *userpass = "bulibuli";
 
+// Saving long constants / variables in the flash memory to save the SRAM
+// preventing memory overflow and making it more stable 
+static const char jsonNotExist[] PROGMEM = "{\"status\":500,"
+    "\"data\":\"Page does not exist\"}";
+static const char jsonInvalidUser[] PROGMEM =  "{\"status\":500,"
+    "\"data\":\"User and/or pass is not valid\"}";
+static const char jsonLedStatus [] PROGMEM = "{"
+    "\"status\":200,"
+    "\"data\":{"
+    "\"redLed\":{\"brightness\":%u,\"isOn\": %d},"
+    "\"yellowLed\":{\"brightness\":%u,\"isOn\":%d},"
+    "\"blueLed\":{\"brightness\":%u,\"isOn\":%d}"
+    "}"
+    "}";
+
 /**
    Led port numbers being used
    For arduino nano, the PWM-capable pins
@@ -277,18 +292,17 @@ void handleProtectedRoutes()
    @return void
 */
 void getLightStatus() {
-  snprintf(
+  snprintf_P(
     resBuf,
     sizeof(resBuf),
-    "{\"redLed\":{\"brightness\":%u,\"isOn\": %d},"
-    "\"yellowLed\":{\"brightness\":%u,\"isOn\":%d},"
-    "\"blueLed\":{\"brightness\":%u,\"isOn\":%d}}",
+    jsonLedStatus,
     leds.getBrightness(redLed),
     leds.getState(redLed),
     leds.getBrightness(yellowLed),
     leds.getState(yellowLed),
     leds.getBrightness(blueLed),
-    leds.getState(blueLed));
+    leds.getState(blueLed)
+  );
 }
 
 /**
@@ -297,10 +311,11 @@ void getLightStatus() {
    @return void
 */
 void handleInvalidUser() {
-  snprintf(
+  snprintf_P(
     resBuf,
     sizeof(resBuf),
-    "{\"Error\": \"User or password not valid\"}");
+    jsonInvalidUser
+  );
 }
 
 /**
@@ -309,10 +324,11 @@ void handleInvalidUser() {
    @return void
 */
 void emptyEndpoint() {
-  snprintf(
+  snprintf_P(
     resBuf,
     sizeof(resBuf),
-    "This is the IoT Server :-D");
+    jsonNotExist
+  );
 }
 
 /*
