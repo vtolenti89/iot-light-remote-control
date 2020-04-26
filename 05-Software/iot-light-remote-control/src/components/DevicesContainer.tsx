@@ -64,7 +64,6 @@ const DevicesContainer: React.FC<ContainerProps> = ({ name }) => {
             turnedOn: res[lamp].isOn
           }
         })
-        console.log(devices);
         dispatch({
           key: 'devices',
           data: devices,
@@ -94,13 +93,11 @@ const DevicesContainer: React.FC<ContainerProps> = ({ name }) => {
 
   return (
     <div className="c-devices">
-      <Loader isLoading={isFetchingData} message={"Updating devices"} onClose={(e) => console.log(e)} />
+      <Loader isLoading={isFetchingData} message={"Updating devices"} onClose={(e) => {}} />
       <div className="c-devices__slide">
         {state.devices.length ?
           <IonSlides
-            onIonSlidesDidLoad={(e) => {
-              console.log('did load')
-            }}
+            onIonSlidesDidLoad={(e) => {}}
             onIonSlideDidChange={(e) => {
               // jumpToSlide(e)
             }}

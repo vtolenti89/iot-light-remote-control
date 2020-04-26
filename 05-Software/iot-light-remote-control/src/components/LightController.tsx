@@ -23,18 +23,18 @@ export interface InterfaceLamp {
 
 
 const LightController: React.FC<InterfaceLamp> = ({ id, color, brightness, turnedOn }) => {
+  console.log(brightness);
+
   const { state, dispatch } = useContext(AppContext);
-  const [{ updateToggle, updateBrightness, isUpdating }, setUpdating] = useState({ updateToggle: false, updateBrightness: 100, isUpdating: false });
+  const [isUpdating, setUpdating] = useState(false);
   const isMount = useIsMount();
 
-
-  const handleUpdateToggle = async () => {
-    console.log('...updating toggle...')
-    lightService.toggleLight(state.api, id, updateToggle, state.auth.username, state.auth.password ).then((res) => {
+  const handleUpdateToggle = async (isToggled: boolean) => {
+    console.log('...updating toggle:', isToggled)
+    lightService.toggleLight(state.api, id, isToggled, state.auth.username, state.auth.password).then((res) => {
       console.log(res);
       if (!res.error) {
         const lampsArray = Object.keys(res);
-        console.log(lampsArray);
         const devices = lampsArray.map((lamp: any, index: number) => {
           return {
             id: lamp,
@@ -49,14 +49,13 @@ const LightController: React.FC<InterfaceLamp> = ({ id, color, brightness, turne
         })
 
       }
-      setUpdating({ updateToggle, updateBrightness, isUpdating: false });
+      setUpdating(false);
     })
   }
 
-
-  const handleUpdateBrightness = async () => {
-    console.log('...updating brightness...')
-    lightService.dimLight(state.api, id, updateBrightness, state.auth.username, state.auth.password ).then((res) => {
+  const handleUpdateBrightness = async (brightness: number) => {
+    console.log('...updating brightness:', brightness)
+    lightService.dimLight(state.api, id, brightness, state.auth.username, state.auth.password).then((res) => {
       console.log(res);
       if (!res.error) {
         const lampsArray = Object.keys(res);
@@ -76,59 +75,41 @@ const LightController: React.FC<InterfaceLamp> = ({ id, color, brightness, turne
         })
 
       }
-      setUpdating({ updateToggle, updateBrightness, isUpdating: false });
+      setUpdating(false);
     })
   }
 
-
-  useEffect(() => {
-    console.log('here')
-    if (!isMount) {
-      handleUpdateToggle();
-    }
-  },
-    [updateToggle]
-  );
-
-  useEffect(() => {
-    if (!isMount) {
-      handleUpdateBrightness();
-    }
-  },
-    [updateBrightness]
-  );
-
   const handleBrightness = (brightness: number) => {
-    setUpdating({ updateToggle, updateBrightness: brightness, isUpdating: true });
+    //setUpdating(true);
+    handleUpdateBrightness(brightness);
   }
 
-  const handleToggle = (isOn: boolean) => {
-    setUpdating({ updateToggle: isOn, updateBrightness, isUpdating: true });
+  const handleToggle = (isToggled: boolean) => {
+    setUpdating(true);
+    handleUpdateToggle(isToggled);
   }
 
   return (
     <div className="c-light">
-      <Loader isLoading={isUpdating} message={"Updating devices"} onClose={() => {}} />
+      <Loader isLoading={isUpdating} message={"Updating devices"} onClose={() => { }} />
       <div className="c-light__lamp">
-  <h1>{id}</h1>
         <span style={{ background: turnedOn ? `radial-gradient(${color} 5%, transparent)` : `radial-gradient(transparent 95%, ${color})` }}>
-          {turnedOn &&
-            <span style={{ background: `rgba(0,0,0, ${(100 + 5 - brightness) / 100})` }}></span>
-          }
+          <span style={{ border: `${color} solid 3px`, background: turnedOn ? `rgba(255,255,255, ${1.0 - (1.0 - 0.0) / 100 * brightness})` : 'transparent' }}></span>
+          <span style={{background: color}}></span>
         </span>
+
       </div>
 
       <div className="c-light__controls">
 
         <div className="c-light__range">
           <IonItem lines={"none"}>
-            <IonRange value={brightness} max={100} min={0} debounce={250} snaps={true} step={10} ticks={true} onIonChange={(e: CustomEvent) => handleBrightness(e.detail.value)}>
+            <IonRange value={brightness} max={100} min={0} debounce={750} snaps={true} step={10} ticks={true} onIonChange={(e: CustomEvent) => handleBrightness(e.detail.value)}>
               <IonIcon slot="start" size="small" icon={sunny} ></IonIcon>
               <IonIcon slot="end" size="large" icon={sunny}></IonIcon>
             </IonRange>
           </IonItem>
         </div>
-{console.log(id, turnedOn)}
         <div className="c-light__toggle">
           <IonItem lines={"none"}>
             <IonLabel>ON</IonLabel>

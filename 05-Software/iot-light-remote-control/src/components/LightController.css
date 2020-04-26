@@ -22,7 +22,7 @@
   border-radius: 50%;
 }
 
-.c-light__lamp > span span {
+.c-light__lamp > span span:first-of-type {
   position: absolute;
   content: '';
   left: 0;
@@ -30,6 +30,21 @@
   width: 100%;
   height: 100%;
   border-radius: 50%;
+}
+
+.c-light__lamp > span span:last-of-type {
+  position: absolute;
+  content: '';
+  left: 50%;
+  top: 45%;
+  transform: translate(-50%, 0);
+  width: 110%;
+  height: 55%;
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 100px;
+  border-bottom-right-radius: 100px;
+
 }
 
 .c-light__controls {

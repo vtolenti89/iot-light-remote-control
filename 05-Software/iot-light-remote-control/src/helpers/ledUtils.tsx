@@ -1,7 +1,6 @@
 import { LED, ACTION } from './variables.json';
 
 export const parseLed = (led: string, action: number) => {
-    console.log(led)
     switch(led) {
         case LED.BLUE: {
             if(action === ACTION.BRIGHTNESS)
