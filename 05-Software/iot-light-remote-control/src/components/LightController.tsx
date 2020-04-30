@@ -23,9 +23,7 @@ export interface InterfaceLamp {
 
 
 const LightController: React.FC<InterfaceLamp> = ({ id, color, brightness, turnedOn }) => {
-  console.log(brightness);
-
-  const { state, dispatch } = useContext(AppContext);
+    const { state, dispatch } = useContext(AppContext);
   const [isUpdating, setUpdating] = useState(false);
   const isMount = useIsMount();
 
@@ -69,13 +67,13 @@ const LightController: React.FC<InterfaceLamp> = ({ id, color, brightness, turne
           }
         })
         console.log(devices);
+        setUpdating(false);
         dispatch({
           key: 'devices',
           data: devices,
         })
 
       }
-      setUpdating(false);
     })
   }
 
@@ -113,16 +111,9 @@ const LightController: React.FC<InterfaceLamp> = ({ id, color, brightness, turne
         <div className="c-light__toggle">
           <IonItem lines={"none"}>
             <IonLabel>ON</IonLabel>
-            <IonToggle checked={turnedOn} onIonChange={(e) => handleToggle(e.detail.checked)}
-            // setChecked(e.detail.checked)} 
-            // let devices = state.devices;
-            // devices[id || 0].turnedOn = e.detail.checked;
-            // dispatch({
-            //   key: 'devices',
-            //   data: devices
-            // })
-
-            />
+            
+            <button onClick={(e)=>handleToggle(!turnedOn)} >toggle</button>
+            <IonToggle value="true" checked={turnedOn} onIonChange={(e) => handleToggle(e.detail.checked)}/>
           </IonItem>
         </div>
       </div>
