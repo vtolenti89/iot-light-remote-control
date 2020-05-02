@@ -46,12 +46,6 @@ const reducer = (state: ContextStateInterface, action: ContextActionInterface) =
     if (action.key) {
         return { ...state, ...{ [action.key]: action.data } }
     }
-    // switch (action.key) {
-
-    //     case "setCount": {
-    //         return { ...state, count: action.count }
-    //     }
-    // }
     return state;
 }
 

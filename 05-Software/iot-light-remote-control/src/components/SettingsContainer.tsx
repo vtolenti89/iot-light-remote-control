@@ -12,20 +12,6 @@ interface SettingsContainerProps {
 const SettingsContainer: React.FC<SettingsContainerProps> = (props) => {
   const { state, dispatch } = useContext(AppContext);
 
-  // const fetchPuppers = useCallback(async() => {
-  //   const ret = await fetch('https://dog.ceo/api/breeds/image/random/10');
-  //   const json = await ret.json();
-  //   dispatch({
-  //     type: 'setPuppers',
-  //     puppers: json.message
-  //   })
-  // }, [dispatch]);
-
-  // useEffect(() => {
-  //   fetchPuppers();
-  // }, [fetchPuppers]);
-
-
   return (
     <div className="c-settings">
       <IonList>

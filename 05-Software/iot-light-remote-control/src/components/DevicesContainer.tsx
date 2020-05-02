@@ -21,33 +21,6 @@ const DevicesContainer: React.FC<ContainerProps> = ({ name }) => {
   const [{ fetchData, isFetchingData }, setFetchingData] = useState({ fetchData: false, isFetchingData: false });
   const isMount = useIsMount();
   // Optional parameters to pass to the swiper instance. See http://idangero.us/swiper/api/ for valid options.
-  const slideOpts = {
-    initialSlide: 1,
-    speed: 400,
-    autoHeight: true,
-    direction: 'vertical',
-    centeredSlides: true,
-    observer: true,
-    on: {
-      observerUpdate: (e: any) => {
-        // if(e.target && e.target.length) {
-        //   e.target.length().then((length: number) => {
-        //     e.target.slideTo(length)
-        //   });
-        // }
-      }
-    }
-  };
-
-  const jumpToSlide = (e: any) => {
-    console.log(e)
-    if (e.target && e.target.length) {
-      e.target.length().then((length: number) => {
-        e.target.slideTo(length)
-      });
-    }
-  }
-
 
   const updateDevices = async () => {
     console.log('...retrieving...')
@@ -68,7 +41,6 @@ const DevicesContainer: React.FC<ContainerProps> = ({ name }) => {
           key: 'devices',
           data: devices,
         })
-
       }
       setFetchingData({ fetchData, isFetchingData: false });
     })
@@ -93,21 +65,10 @@ const DevicesContainer: React.FC<ContainerProps> = ({ name }) => {
 
   return (
     <div className="c-devices">
-      <Loader isLoading={isFetchingData} message={"Updating devices"} onClose={(e) => {}} />
+      <Loader isLoading={isFetchingData} message={"Updating devices"} onClose={(e) => { }} />
       <div className="c-devices__slide">
         {state.devices.length ?
-          <IonSlides
-            onIonSlidesDidLoad={(e) => {}}
-            onIonSlideDidChange={(e) => {
-              // jumpToSlide(e)
-            }}
-            pager={true} options={slideOpts}>
-            {state.devices.map((device, index) => {
-              return <IonSlide key={index}>
-                <LightController {...device} />
-              </IonSlide>
-            })}
-          </IonSlides>
+          <LightController devices={state.devices} />
           : noDevices}
       </div>
       <div className="c-devices__btn">
