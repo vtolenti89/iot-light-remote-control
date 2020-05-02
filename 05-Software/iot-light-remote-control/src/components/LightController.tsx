@@ -31,6 +31,7 @@ const LightController: React.FC<LightControllerInterface> = ({ devices }) => {
   const { state, dispatch } = useContext(AppContext);
   const [isUpdating, setUpdating] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isRangeActive, setRange] = useState(false);
   const isMount = useIsMount();
 
   const handleUpdateToggle = async (isToggled: boolean) => {
@@ -98,8 +99,10 @@ const LightController: React.FC<LightControllerInterface> = ({ devices }) => {
   }
 
   const handleBrightness = (brightness: number) => {
-    setUpdating(true);
-    handleUpdateBrightness(brightness);
+    if(isRangeActive) {
+      setUpdating(true);
+      handleUpdateBrightness(brightness);
+    }
   }
 
   const handleToggle = (isToggled: boolean) => {
@@ -124,7 +127,17 @@ const LightController: React.FC<LightControllerInterface> = ({ devices }) => {
       <div className="c-light__controls">
         <div className="c-light__range">
           <IonItem lines={"none"}>
-            <IonRange value={devices[activeIndex].brightness} max={100} min={0} debounce={750} snaps={true} step={10} ticks={true} onIonChange={(e: CustomEvent) => handleBrightness(e.detail.value)}>
+            <IonRange value={devices[activeIndex].brightness} 
+                      max={100} 
+                      min={0} 
+                      debounce={750} 
+                      snaps={true} 
+                      step={10} 
+                      ticks={true} 
+                      onIonChange={(e: CustomEvent) => handleBrightness(e.detail.value)}
+                      onIonBlur={(e: CustomEvent) => setRange(false)}
+                      onIonFocus={(e: CustomEvent) => setRange(true)}
+                      >
               <IonIcon slot="start" size="small" icon={sunny} ></IonIcon>
               <IonIcon slot="end" size="large" icon={sunny}></IonIcon>
             </IonRange>
