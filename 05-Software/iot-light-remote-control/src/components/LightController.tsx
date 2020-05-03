@@ -29,17 +29,19 @@ interface LightControllerInterface {
 
 const LightController: React.FC<LightControllerInterface> = ({ devices }) => {
   const { state, dispatch } = useContext(AppContext);
-  const [isUpdating, setUpdating] = useState(false);
+  const [isLoading, setLoading] = useState(false);
+  const [updatedBrightness, setUpdatedBrightness] = useState(0);
+  const [updatedToggle, setUpdatedToggle] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isRangeActive, setRange] = useState(false);
   const isMount = useIsMount();
 
-  const handleUpdateToggle = async (isToggled: boolean) => {
-    console.log('...updating toggle:', isToggled)
+  const handleUpdateToggle = async () => {
+    console.log('...updating toggle:', updatedToggle, isLoading)
     lightService.toggleLight(
       state.api, 
       devices[activeIndex].id, 
-      isToggled, 
+      updatedToggle, 
       state.auth.username, 
       state.auth.password)
       .then((res) => {
@@ -62,16 +64,18 @@ const LightController: React.FC<LightControllerInterface> = ({ devices }) => {
         })
 
       }
-      setUpdating(false);
+      setLoading(false);
     })
+
   }
 
-  const handleUpdateBrightness = async (brightness: number) => {
-    console.log('...updating brightness:', brightness)
+  const handleUpdateBrightness = async () => {
+    
+    console.log('...updating brightness:', updatedBrightness, isLoading)
     lightService.dimLight(
       state.api, 
       devices[activeIndex].id, 
-      brightness, 
+      updatedBrightness, 
       state.auth.username, 
       state.auth.password)
       .then((res) => {
@@ -92,33 +96,50 @@ const LightController: React.FC<LightControllerInterface> = ({ devices }) => {
           key: 'devices',
           data: devices,
         })
-        setUpdating(false);
+        setLoading(false);
 
       }
     })
   }
 
+  useEffect(()=> {
+    if(!isMount) {
+      // Ensures that the range selector is reset
+      // and not triggered automatically
+      setRange(false);
+      handleUpdateBrightness();
+    }
+  }, [isLoading, updatedBrightness])
+
+  useEffect(()=> {
+    if(!isMount) {
+      handleUpdateToggle();
+    }
+  }, [isLoading, updatedToggle])
+
   const handleBrightness = (brightness: number) => {
     if(isRangeActive) {
-      setUpdating(true);
-      handleUpdateBrightness(brightness);
+      console.log("..bra", brightness)
+      setLoading(true);
+      setUpdatedBrightness(brightness);
     }
   }
 
   const handleToggle = (isToggled: boolean) => {
     console.log(isToggled)
-    setUpdating(true);
-    handleUpdateToggle(isToggled);
+    setLoading(true);
+    setUpdatedToggle(isToggled);
   }
 
   return (
     <div className="c-light">
-      <Loader isLoading={isUpdating} message={".Updating devices"} onClose={() => { }} />
+      <Loader isLoading={isLoading} message={".Updating devices"} onClose={() => { }} />
       {devices.length ? <div className="c-light__lamps">
         {devices.map((device, index) => {
           return <div className={`c-light__lamp ${activeIndex === index ? 'active' : ''}`} key={index} onClick={e => setActiveIndex(index)}>
             <span style={{  background: device.turnedOn ? device.color : 'transparent'}}></span>
-            <span style={{ border: `${device.color} solid 3px`, background: device.turnedOn ? `${device.turnedOn ? `rgba(255,255,255, ${1.0 - (1.0 - 0.0) / 100 * device.brightness})` : 'transparent'  }` : 'transparent'}}></span>
+            <span style={{ border: `${device.color} solid 3px`, 
+                          background: device.turnedOn ? `rgba(255,255,255, ${1.0 - (1.0 - 0.0) / 100 * device.brightness})` : 'transparent'}}></span>
           </div>
         })}
       </div> : null}
@@ -145,6 +166,7 @@ const LightController: React.FC<LightControllerInterface> = ({ devices }) => {
         </div>
         <div className="c-light__toggle">
           <IonItem lines={"none"}>
+            {console.log(devices[activeIndex])}
             <ToggleButton checked={devices[activeIndex].turnedOn} onToggle={handleToggle} />
           </IonItem>
         </div>

@@ -44,6 +44,9 @@ const DevicesContainer: React.FC<ContainerProps> = ({ name }) => {
       }
       setFetchingData({ fetchData, isFetchingData: false });
     })
+    setTimeout(() => {
+      setFetchingData({ fetchData, isFetchingData: false });
+    }, 5000);
   }
 
   useEffect(() => {
