@@ -1,8 +1,7 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import { IonIcon, IonItem, IonButton, IonLabel } from '@ionic/react';
 import { wifi } from 'ionicons/icons';
 import { lightService } from './../services/light-service';
-import { useIsMount } from './useIsMount';
 import LightController from './LightController';
 import Loader from './loader';
 import { AppContext } from './../AppContextProvider';
@@ -15,8 +14,6 @@ interface ContainerProps {
 const DevicesContainer: React.FC<ContainerProps> = ({ name }) => {
   const { state, dispatch } = useContext(AppContext);
   const [isLoading, setLoading] = useState(false);
-  const isMount = useIsMount();
-  // Optional parameters to pass to the swiper instance. See http://idangero.us/swiper/api/ for valid options.
 
   const updateDevices = async () => {
     console.log('...retrieving...')
@@ -57,8 +54,6 @@ const DevicesContainer: React.FC<ContainerProps> = ({ name }) => {
     </h2>
   )
 
-  // const _slidesRef = React.createRef<any>();
-
   return (
     <div className="c-devices">
       <Loader isLoading={isLoading} message={"Updating devices"} onClose={(e) => { }} />
@@ -69,7 +64,7 @@ const DevicesContainer: React.FC<ContainerProps> = ({ name }) => {
       </div>
       <div className="c-devices__btn">
         <IonItem lines={"none"}>
-          <IonButton expand="full" onClick={handleRefresh}>
+          <IonButton expand="full" shape={"round"} onClick={handleRefresh}>
             <IonLabel>Refresh</IonLabel>
             <IonIcon icon={wifi}></IonIcon>
           </IonButton>

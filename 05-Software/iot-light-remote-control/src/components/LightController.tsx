@@ -18,14 +18,12 @@ interface LightControllerInterface {
   devices: Array<InterfaceLamp>,
 }
 
-
 const LightController: React.FC<LightControllerInterface> = ({ devices }) => {
   const { state, dispatch } = useContext(AppContext);
   const [isLoading, setLoading] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
 
   const handleUpdateToggle = async (isOn: boolean) => {
-    console.log('...updating toggle:', isOn)
     lightService.toggleLight(
       state.api,
       devices[activeIndex].id,
@@ -60,7 +58,6 @@ const LightController: React.FC<LightControllerInterface> = ({ devices }) => {
 
   const handleUpdateBrightness = async (brightness: number) => {
 
-    console.log('...updating brightness:', brightness, isLoading)
     lightService.dimLight(
       state.api,
       devices[activeIndex].id,
@@ -68,9 +65,7 @@ const LightController: React.FC<LightControllerInterface> = ({ devices }) => {
       state.auth.username,
       state.auth.password)
       .then((res) => {
-        console.log(res);
         if (!res.error) {
-
           const lampsArray = Object.keys(res);
           const devices = lampsArray.map((lamp: any, index: number) => {
             return {
@@ -80,7 +75,6 @@ const LightController: React.FC<LightControllerInterface> = ({ devices }) => {
               turnedOn: res[lamp].isOn
             }
           })
-          console.log(devices);
           dispatch({
             key: 'devices',
             data: devices,
@@ -105,7 +99,6 @@ const LightController: React.FC<LightControllerInterface> = ({ devices }) => {
   }
 
   const handleToggle = (isToggled: boolean) => {
-    console.log(isToggled)
     setLoading(true);
     handleUpdateToggle(isToggled);
   }
@@ -137,6 +130,7 @@ const LightController: React.FC<LightControllerInterface> = ({ devices }) => {
               step={10}
               ticks={true}
               onIonChange={(e: CustomEvent) => handleBrightness(e.detail.value)}
+              className={"c-range"}
             >
               <IonIcon slot="start" size="small" icon={sunny} ></IonIcon>
               <IonIcon slot="end" size="large" icon={sunny}></IonIcon>
