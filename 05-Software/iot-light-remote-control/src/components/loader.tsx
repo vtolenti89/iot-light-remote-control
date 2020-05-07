@@ -1,15 +1,14 @@
-import React, { useContext } from 'react';
-import { IonToggle, IonItem, IonLabel, IonLoading, IonButton, IonContent } from '@ionic/react';
+import React from 'react';
+import { IonLoading } from '@ionic/react';
 
 import './Loader.css';
-import { AppContext } from './../AppContextProvider';
+// import { AppContext } from './../AppContextProvider';
 
 export interface InterfaceLoader {
   isLoading: boolean,
   message: string,
   onClose?: (e: Event) => void
 }
-
 
 const Loader: React.FC<InterfaceLoader> = ({ isLoading, onClose, message }) => {
 

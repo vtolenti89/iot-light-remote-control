@@ -1,6 +1,6 @@
 import { apiService } from './api-service';
 import { ledUtils } from '../helpers/ledUtils';
-import { LED, ACTION } from '../helpers/variables.json';
+import { ACTION } from '../helpers/variables.json';
 
 
 
@@ -26,5 +26,6 @@ const toggleLight = (api: string, led: string, isOn: boolean, user: string, pass
 export const lightService = {
   getLightStatus,
   dimLight,
-  toggleLight
+  toggleLight,
+  checkIp
 };

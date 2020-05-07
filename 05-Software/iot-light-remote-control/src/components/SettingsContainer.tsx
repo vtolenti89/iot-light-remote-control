@@ -1,6 +1,6 @@
-import React, { useCallback, useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { AppContext } from './../AppContextProvider';
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButton, IonListHeader, IonToggle, IonList, IonItem, IonInput, IonItemGroup, IonLabel, IonIcon, IonItemDivider, IonSegment, IonSegmentButton } from '@ionic/react';
+import { IonListHeader, IonToggle, IonList, IonItem, IonInput, IonItemGroup, IonLabel, IonIcon } from '@ionic/react';
 import { moon, sunny } from 'ionicons/icons';
 
 import './DevicesContainer.css';

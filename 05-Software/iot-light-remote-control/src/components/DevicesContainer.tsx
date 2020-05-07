@@ -1,24 +1,20 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { IonSlides, IonSlide, IonFab, IonFabButton, IonIcon, IonItem, IonButton, IonLabel } from '@ionic/react';
+import { IonIcon, IonItem, IonButton, IonLabel } from '@ionic/react';
 import { wifi } from 'ionicons/icons';
 import { lightService } from './../services/light-service';
 import { useIsMount } from './useIsMount';
-
-import LightController, { InterfaceLamp } from './LightController';
+import LightController from './LightController';
 import Loader from './loader';
-import { add } from 'ionicons/icons';
-import './DevicesContainer.css';
 import { AppContext } from './../AppContextProvider';
+import './DevicesContainer.css';
 
 interface ContainerProps {
   name: string;
 }
 
-
-
 const DevicesContainer: React.FC<ContainerProps> = ({ name }) => {
   const { state, dispatch } = useContext(AppContext);
-  const [{ fetchData, isFetchingData }, setFetchingData] = useState({ fetchData: false, isFetchingData: false });
+  const [isLoading, setLoading] = useState(false);
   const isMount = useIsMount();
   // Optional parameters to pass to the swiper instance. See http://idangero.us/swiper/api/ for valid options.
 
@@ -42,21 +38,18 @@ const DevicesContainer: React.FC<ContainerProps> = ({ name }) => {
           data: devices,
         })
       }
-      setFetchingData({ fetchData, isFetchingData: false });
+      setLoading(false);
     })
     setTimeout(() => {
-      setFetchingData({ fetchData, isFetchingData: false });
+      setLoading(false);
     }, 5000);
   }
 
-  useEffect(() => {
-    if (!isMount) {
-      setFetchingData({ fetchData, isFetchingData: true });
-      updateDevices();
-    }
-  },
-    [fetchData]
-  );
+
+  const handleRefresh = () => {
+    setLoading(true);
+    updateDevices();
+  }
 
   const noDevices = (
     <h2>
@@ -68,7 +61,7 @@ const DevicesContainer: React.FC<ContainerProps> = ({ name }) => {
 
   return (
     <div className="c-devices">
-      <Loader isLoading={isFetchingData} message={"Updating devices"} onClose={(e) => { }} />
+      <Loader isLoading={isLoading} message={"Updating devices"} onClose={(e) => { }} />
       <div className="c-devices__slide">
         {state.devices.length ?
           <LightController devices={state.devices} />
@@ -76,7 +69,7 @@ const DevicesContainer: React.FC<ContainerProps> = ({ name }) => {
       </div>
       <div className="c-devices__btn">
         <IonItem lines={"none"}>
-          <IonButton expand="full" onClick={() => setFetchingData({ fetchData: !fetchData, isFetchingData })}>
+          <IonButton expand="full" onClick={handleRefresh}>
             <IonLabel>Refresh</IonLabel>
             <IonIcon icon={wifi}></IonIcon>
           </IonButton>

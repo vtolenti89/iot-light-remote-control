@@ -10,7 +10,7 @@ import {
   IonTabs
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { ellipse, square, triangle, cog, flash } from 'ionicons/icons';
+import { cog, flash } from 'ionicons/icons';
 import DevicesPage from './pages/DevicesPage';
 import Tab2 from './pages/Tab2';
 import AppContextProvider from './AppContextProvider';

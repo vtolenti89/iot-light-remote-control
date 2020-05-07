@@ -1,6 +1,4 @@
-import { useContext } from 'react';
 import axios from "axios";
-import { AppContext } from './../AppContextProvider';
 
 const protocol = 'http://';
 
