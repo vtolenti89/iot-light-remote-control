@@ -31,7 +31,6 @@ const LightController: React.FC<LightControllerInterface> = ({ devices }) => {
       state.auth.username,
       state.auth.password)
       .then((res) => {
-        console.log(res);
         if (!res.error) {
 
           const lampsArray = Object.keys(res);
@@ -130,6 +129,7 @@ const LightController: React.FC<LightControllerInterface> = ({ devices }) => {
               step={10}
               ticks={true}
               onIonChange={(e: CustomEvent) => handleBrightness(e.detail.value)}
+              disabled={!devices[activeIndex].turnedOn}
               className={"c-range"}
             >
               <IonIcon slot="start" size="small" icon={sunny} ></IonIcon>
