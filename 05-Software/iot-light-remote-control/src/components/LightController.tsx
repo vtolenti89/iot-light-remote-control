@@ -2,8 +2,9 @@ import React, { useContext, useState } from 'react';
 import { IonItem, IonRange, IonIcon } from '@ionic/react';
 import { sunny } from 'ionicons/icons';
 import { lightService } from './../services/light-service';
+import { ledUtils } from './../helpers/ledUtils';
 import ToggleButton from './shared/ToggleButton';
-import Loader from './loader';
+import  {useLoader}  from './useLoader';
 import { AppContext } from './../AppContextProvider';
 import './LightController.css';
 
@@ -20,7 +21,6 @@ interface LightControllerInterface {
 
 const LightController: React.FC<LightControllerInterface> = ({ devices }) => {
   const { state, dispatch } = useContext(AppContext);
-  const [isLoading, setLoading] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
 
   const handleUpdateToggle = async (isOn: boolean) => {
@@ -31,28 +31,10 @@ const LightController: React.FC<LightControllerInterface> = ({ devices }) => {
       state.auth.username,
       state.auth.password)
       .then((res) => {
-        if (!res.error) {
-
-          const lampsArray = Object.keys(res);
-          const devices = lampsArray.map((lamp: any, index: number) => {
-            return {
-              id: lamp,
-              color: res[lamp].color,
-              brightness: res[lamp].brightness,
-              turnedOn: res[lamp].isOn
-            }
-          })
-
-          dispatch({
-            key: 'devices',
-            data: devices,
-          })
-
-        }
-        setLoading(false);
+        ledUtils.handleResponse(res, dispatch)
+        useLoader.enable(false, dispatch)
       })
-    resetLoading();
-
+      useLoader.reset(dispatch);
   }
 
   const handleUpdateBrightness = async (brightness: number) => {
@@ -64,47 +46,27 @@ const LightController: React.FC<LightControllerInterface> = ({ devices }) => {
       state.auth.username,
       state.auth.password)
       .then((res) => {
-        if (!res.error) {
-          const lampsArray = Object.keys(res);
-          const devices = lampsArray.map((lamp: any, index: number) => {
-            return {
-              id: lamp,
-              color: res[lamp].color,
-              brightness: res[lamp].brightness,
-              turnedOn: res[lamp].isOn
-            }
-          })
-          dispatch({
-            key: 'devices',
-            data: devices,
-          })
-        }
-        setLoading(false);
+        ledUtils.handleResponse(res, dispatch)
+        useLoader.enable(false, dispatch);
       })
-    resetLoading();
-  }
-
-  const resetLoading = () => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 5000)
+    useLoader.reset(dispatch);
   }
 
   const handleBrightness = (brightness: number) => {
     if (brightness !== devices[activeIndex].brightness) {
-      setLoading(true);
+      useLoader.enable(true, dispatch);
       handleUpdateBrightness(brightness);
     }
   }
 
   const handleToggle = (isToggled: boolean) => {
-    setLoading(true);
+    useLoader.enable(true, dispatch)
     handleUpdateToggle(isToggled);
   }
 
   return (
     <div className="c-light">
-      <Loader isLoading={isLoading} message={".Updating devices"} onClose={() => { }} />
+      {/* <Loader isLoading={isLoading} message={".Updating devices"} onClose={() => { }} /> */}
       {devices.length ? <div className="c-light__lamps">
         {devices.map((device, index) => {
           return <div className={`c-light__lamp ${activeIndex === index ? 'active' : ''}`} key={index} onClick={e => setActiveIndex(index)}>

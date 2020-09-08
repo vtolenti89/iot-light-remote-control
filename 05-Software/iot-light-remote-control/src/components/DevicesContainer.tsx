@@ -3,7 +3,9 @@ import { IonIcon, IonItem, IonButton, IonLabel } from '@ionic/react';
 import { wifi } from 'ionicons/icons';
 import { lightService } from './../services/light-service';
 import LightController from './LightController';
-import Loader from './loader';
+import { ledUtils } from './../helpers/ledUtils';
+import { useLoader } from './useLoader';
+
 import { AppContext } from './../AppContextProvider';
 import './DevicesContainer.css';
 
@@ -13,39 +15,15 @@ interface ContainerProps {
 
 const DevicesContainer: React.FC<ContainerProps> = ({ name }) => {
   const { state, dispatch } = useContext(AppContext);
-  const [isLoading, setLoading] = useState(false);
 
-  const updateDevices = async () => {
+  const handleRefresh = async () => {
+    useLoader.enable(true, dispatch)
     console.log('...retrieving...')
     lightService.getLightStatus(state.api).then((res) => {
-      console.log(res);
-      if (res) {
-        const lampsArray = Object.keys(res);
-        console.log(lampsArray);
-        const devices = lampsArray.map((lamp: any, index: number) => {
-          return {
-            id: lamp,
-            color: res[lamp].color,
-            brightness: res[lamp].brightness,
-            turnedOn: res[lamp].isOn
-          }
-        })
-        dispatch({
-          key: 'devices',
-          data: devices,
-        })
-      }
-      setLoading(false);
+      ledUtils.handleResponse(res, dispatch)
+      useLoader.enable(false, dispatch)
     })
-    setTimeout(() => {
-      setLoading(false);
-    }, 5000);
-  }
-
-
-  const handleRefresh = () => {
-    setLoading(true);
-    updateDevices();
+    useLoader.reset(dispatch);
   }
 
   const noDevices = (
@@ -56,7 +34,6 @@ const DevicesContainer: React.FC<ContainerProps> = ({ name }) => {
 
   return (
     <div className="c-devices">
-      <Loader isLoading={isLoading} message={"Updating devices"} onClose={(e) => { }} />
       <div className="c-devices__slide">
         {state.devices.length ?
           <LightController devices={state.devices} />

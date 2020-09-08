@@ -12,7 +12,6 @@ import {
 import { IonReactRouter } from '@ionic/react-router';
 import { cog, flash } from 'ionicons/icons';
 import DevicesPage from './pages/DevicesPage';
-import Tab2 from './pages/Tab2';
 import AppContextProvider from './AppContextProvider';
 import SettingsPage from './pages/SettingsPage';
 
@@ -34,16 +33,17 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import Loader from './components/loader';
 
 const App: React.FC = () => (
   <IonApp>
     <AppContextProvider>
+    <Loader />
       <IonReactRouter>
         <IonTabs>
           <IonRouterOutlet>
             <Route path="/tab1" component={DevicesPage} exact={true} />
-            <Route path="/tab2" component={Tab2} exact={true} />
-            <Route path="/tab3" component={SettingsPage} />
+            <Route path="/tab2" component={SettingsPage} />
             <Route path="/" render={() => <Redirect to="/tab1" />} exact={true} />
           </IonRouterOutlet>
           <IonTabBar slot="bottom">
@@ -51,11 +51,7 @@ const App: React.FC = () => (
               <IonIcon icon={flash} />
               <IonLabel>Devices</IonLabel>
             </IonTabButton>
-            {/* <IonTabButton tab="tab2" href="/tab2">
-            <IonIcon icon={ellipse} />
-            <IonLabel>Tab 2</IonLabel>
-          </IonTabButton> */}
-            <IonTabButton tab="tab3" href="/tab3">
+            <IonTabButton tab="tab2" href="/tab2">
               <IonIcon icon={cog} />
               <IonLabel>Settings</IonLabel>
             </IonTabButton>

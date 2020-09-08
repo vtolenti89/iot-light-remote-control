@@ -12,7 +12,8 @@ interface ContextStateInterface {
     count: number,
     devices: Array<InterfaceLamp>,
     auth: InterfaceAuth,
-    api: string
+    api: string,
+    isLoading: boolean
 }
 
 interface ContextActionInterface {
@@ -39,7 +40,8 @@ const initialState = {
         username: '',
         password: ''
     },
-    api: ''
+    api: '',
+    isLoading: false
 }
 
 const reducer = (state: ContextStateInterface, action: ContextActionInterface) => {
